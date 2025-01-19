@@ -1,0 +1,45 @@
+networks:
+  cache:
+    driver: bridge
+  proxy:
+    driver: bridge
+
+services:
+  cache:
+    image: memcached:1-alpine
+    networks:
+      - cache
+
+  host1:
+    image: httpd:latest
+    volumes:
+      - ./tmp/testHosts/Host1:/usr/local/apache2/htdocs
+    networks:
+      - proxy
+
+  host2:
+    image: httpd:latest
+    volumes:
+      - ./tmp/testHosts/Host2:/usr/local/apache2/htdocs
+    networks:
+      - proxy
+
+  host3:
+    image: httpd:latest
+    volumes:
+      - ./tmp/testHosts/Host3:/usr/local/apache2/htdocs
+    networks:
+      - proxy
+
+  dev:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: dev
+    volumes:
+      - ./:/opt/app
+    ports:
+      - 8080:8080
+    networks:
+      - cache
+      - proxy

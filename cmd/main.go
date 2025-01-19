@@ -107,18 +107,22 @@ func main() {
 				},
 				"host1": Subdomain{
 					SubdomainPath: "host1",
-					Servers:       []string{"http://localhost:9001"},
+					Servers:       []string{"http://172.18.0.2:80"},
 				},
 				"host2": Subdomain{
 					SubdomainPath: "host2",
-					Servers:       []string{"http://localhost:9002"},
+					Servers:       []string{"http://host2"},
+				},
+				"host3": Subdomain{
+					SubdomainPath: "host2",
+					Servers:       []string{"http://host3"},
 				},
 				"random": Subdomain{
 					SubdomainPath: "random",
 					Servers: []string{
-						"http://httpbin.org",
-						"http://cht.sh",
-						"http://google.com",
+						"http://host1",
+						"http://host2",
+						"http://host3",
 					},
 				},
 			},
