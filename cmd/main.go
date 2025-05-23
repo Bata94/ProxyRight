@@ -57,6 +57,10 @@ func (h *ProxyHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 			log.Println(s)
 			var server string
 			if len(s.Servers) == 0 {
+				log.Println("No servers configured for subdomain")
+				http.Error(res, "No servers available", http.StatusServiceUnavailable)
+				return
+			} else if len(s.Servers) == 1 {
 				server = s.Servers[0]
 			} else {
 				server = s.Servers[rand.IntN(len(s.Servers))]
@@ -85,18 +89,14 @@ func (h *ProxyHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	req.Header.Set("Host", target.Host)
 
 	// Forward the request to the target server
-	// proxy := httputil.NewSingleHostReverseProxy(target)
-	proxy := &httputil.ReverseProxy{
-		Rewrite: func(r *httputil.ProxyRequest) {
-			r.SetURL(target)
-			r.Out.Host = r.In.Host // if desired
-		},
-	}
+	proxy := httputil.NewSingleHostReverseProxy(target)
 
 	proxy.ServeHTTP(res, req)
 }
 
 func main() {
+	// math/rand/v2 automatically seeds itself, no need for manual seeding
+	
 	Domains = map[string]Domain{
 		"localhost": Domain{
 			DomainPath: "localhost",
