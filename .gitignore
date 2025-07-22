@@ -15,6 +15,7 @@
 go.work
 tmp/
 bin/
+target/
 
 # Embedded Replicas (Turso/LibSQL)
 **/*.db

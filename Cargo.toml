@@ -1,0 +1,12 @@
+[package]
+name = "reverse-proxy"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+hyper = "1.0"
+hyper-util = { version = "0.1", features = ["full"] }
+http-body-util = "0.1"
+tokio = { version = "1.0", features = ["full"] }
+lazy_static = "1.4"
+mimalloc = { version = "0.1", features = ["secure"] }

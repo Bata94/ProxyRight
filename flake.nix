@@ -18,6 +18,7 @@
             air
             # sqlc
             # goose
+            zig
           ];
           shellHook = ''
             go mod tidy

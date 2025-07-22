@@ -1,4 +1,4 @@
-FROM golang:1.23-bookworm AS base
+FROM golang:1.23-bookworm AS base-go
 
 WORKDIR /opt/app
 
@@ -27,7 +27,7 @@ RUN go mod tidy
 # RUN apk add --no-cache make
 COPY Justfile .
 
-FROM base AS prod-builder
+FROM base-go AS prod-builder-go
 
 WORKDIR /opt/app
 
@@ -40,7 +40,7 @@ RUN go mod tidy
 
 RUN just full-build
 
-FROM gcr.io/distroless/base-debian12 AS prod
+FROM gcr.io/distroless/base-debian12 AS prod-go
 
 EXPOSE 8080
 WORKDIR /opt/app
@@ -54,7 +54,7 @@ USER nonroot:nonroot
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["./main"]
 
-FROM base AS dev
+FROM base-go AS dev-go
 
 RUN apt-get update && apt-get install -y iputils-ping
 
@@ -68,3 +68,13 @@ RUN go install github.com/air-verse/air@latest
 RUN go mod tidy
 
 CMD ["just", "watch"]
+
+FROM rust:slim-bookworm AS dev-rs
+
+WORKDIR /opt/app
+
+COPY . .
+
+RUN RUSTFLAGS="-C target-cpu=native" cargo build --release
+
+CMD [ "/opt/app/target/release/reverse-proxy" ]

@@ -1,12 +1,16 @@
 package main
 
 import (
+	"context"
 	"log"
 	"math/rand/v2"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"strings"
+
+	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/client"
 )
 
 var (
@@ -117,6 +121,10 @@ func main() {
 					SubdomainPath: "host2",
 					Servers:       []string{"http://host3"},
 				},
+				"rep": Subdomain{
+					SubdomainPath: "rep",
+					Servers:       []string{"http://host-replicated"},
+				},
 				"random": Subdomain{
 					SubdomainPath: "random",
 					Servers: []string{
@@ -127,6 +135,22 @@ func main() {
 				},
 			},
 		},
+	}
+
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		log.Print("Error initializing Docker client: ")
+		log.Fatal(err)
+	}
+	defer cli.Close()
+
+	containers, err := cli.ContainerList(context.Background(), container.ListOptions{All: true})
+	if err != nil {
+		panic(err)
+	}
+
+	for _, ctr := range containers {
+		log.Printf("%s %s (status: %s)\n", ctr.ID, ctr.Image, ctr.Status)
 	}
 
 	// Start the HTTP server

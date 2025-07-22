@@ -31,15 +31,43 @@ services:
     networks:
       - proxy
 
-  dev:
+  host-replicated:
+    image: httpd:latest
+    volumes:
+      - ./tmp/testHosts/Host1:/usr/local/apache2/htdocs
+    networks:
+      - proxy
+    deploy:
+      mode: replicated
+      replicas: 6
+
+  dev-rs:
     build:
       dockerfile: Dockerfile
       context: .
-      target: dev
+      target: dev-rs
     volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 8081:8081
+    networks:
+      - cache
+      - proxy
+    labels:
+      pr.proxy.networks: "proxy"
+
+  dev-go:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: dev-go
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
       - ./:/opt/app
     ports:
       - 8080:8080
     networks:
       - cache
       - proxy
+    labels:
+      pr.proxy.networks: "proxy"
