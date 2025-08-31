@@ -1,14 +1,14 @@
 [package]
-name = "echoserver"
+name = "ProxyRight"
 version = "0.1.0"
 edition = "2024"
 
 [lib]
-name = "echoserver"
+name = "ProxyRight"
 path = "src/lib.rs"
 
 [[bin]]
-name = "echoserver"
+name = "ProxyRight"
 path = "src/main.rs"
 
 [dependencies]

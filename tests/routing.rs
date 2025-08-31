@@ -1,4 +1,4 @@
-use echoserver::config::{Config, Route, HealthStatus};
+use ProxyRight::config::{Config, Route, HealthStatus};
 use hyper::{Body, Response, StatusCode};
 use hyper::service::{make_service_fn, service_fn};
 use std::convert::Infallible;
@@ -15,7 +15,7 @@ async fn spawn_app(config: Config) -> SocketAddr {
         let config = config.clone();
         async move {
             Ok::<_, Infallible>(service_fn(move |req| {
-                echoserver::handle_request(req, config.clone())
+                ProxyRight::handle_request(req, config.clone())
             }))
         }
     });

@@ -9,7 +9,7 @@ use std::io::Write;
 use std::sync::Arc;
 
 // Helper to spawn the main application with a specific config file
-async fn spawn_app_with_config(config: echoserver::config::Config) -> (SocketAddr, JoinHandle<()>) {
+async fn spawn_app_with_config(config: ProxyRight::config::Config) -> (SocketAddr, JoinHandle<()>) {
     let addr: SocketAddr = "127.0.0.1:0".parse().expect("Invalid address"); // Use 0 for ephemeral port
 
     let (tx, rx) = tokio::sync::oneshot::channel();
@@ -21,7 +21,7 @@ async fn spawn_app_with_config(config: echoserver::config::Config) -> (SocketAdd
             let config_clone = config_arc.clone(); // Clone Arc for each service
             async move {
                 Ok::<_, Infallible>(service_fn(move |req| {
-                    echoserver::handle_request(req, config_clone.clone()) // Clone Arc for each request
+                    ProxyRight::handle_request(req, config_clone.clone()) // Clone Arc for each request
                 }))
             }
         });
@@ -71,7 +71,7 @@ async fn test_basic_proxying() {
     let temp_dir = tempfile::tempdir().unwrap();
     let config_path = temp_dir.path().join("test_config.toml");
     let config_content = format!(
-        r#" 
+        r#"
 health_check_interval = 1
 
 [[routes]]
@@ -83,7 +83,7 @@ backends = ["http://127.0.0.1:{}"]
     let mut file = fs::File::create(&config_path).unwrap();
     file.write_all(config_content.as_bytes()).unwrap();
 
-    let config = echoserver::config::load_config(config_path.to_str().unwrap()).unwrap();
+    let config = ProxyRight::config::load_config(config_path.to_str().unwrap()).unwrap();
 
     // 3. Start the proxy application with the temporary config
     let (proxy_addr, proxy_handle) = spawn_app_with_config(config).await;
@@ -118,7 +118,7 @@ async fn test_default_proxying() {
     let temp_dir = tempfile::tempdir().unwrap();
     let config_path = temp_dir.path().join("test_default_config.toml");
     let config_content = format!(
-        r#" 
+        r#"
 health_check_interval = 1
 
 [default_route]
@@ -129,7 +129,7 @@ backend = "http://127.0.0.1:{}"
     let mut file = fs::File::create(&config_path).unwrap();
     file.write_all(config_content.as_bytes()).unwrap();
 
-    let config = echoserver::config::load_config(config_path.to_str().unwrap()).unwrap();
+    let config = ProxyRight::config::load_config(config_path.to_str().unwrap()).unwrap();
 
     // 3. Start the proxy application with the temporary config
     let (proxy_addr, proxy_handle) = spawn_app_with_config(config).await;
@@ -166,7 +166,7 @@ async fn test_static_file_serving() {
     // 2. Create a temporary config file with a static_files entry
     let config_path = temp_dir.path().join("test_static_config.toml");
     let config_content = format!(
-        r#" 
+        r#"
 health_check_interval = 1
 
 [[static_files]]
@@ -178,7 +178,7 @@ root = "{}"
     let mut file = fs::File::create(&config_path).unwrap();
     file.write_all(config_content.as_bytes()).unwrap();
 
-    let config = echoserver::config::load_config(config_path.to_str().unwrap()).unwrap();
+    let config = ProxyRight::config::load_config(config_path.to_str().unwrap()).unwrap();
 
     // 3. Start the proxy application with the temporary config
     let (proxy_addr, proxy_handle) = spawn_app_with_config(config).await;
@@ -226,7 +226,7 @@ middlewares = ["logging"]
     let mut file = fs::File::create(&config_path).unwrap();
     file.write_all(config_content.as_bytes()).unwrap();
 
-    let config = echoserver::config::load_config(config_path.to_str().unwrap()).unwrap();
+    let config = ProxyRight::config::load_config(config_path.to_str().unwrap()).unwrap();
 
     // 3. Start the proxy application with the temporary config
     let (proxy_addr, proxy_handle) = spawn_app_with_config(config).await;

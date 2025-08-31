@@ -3,3 +3,7 @@ health_check_interval = 5
 
 [default_route]
 backend = "http://127.0.0.1:5500"
+
+[basic_auth]
+username = "testuser"
+password = "testpass"

@@ -3,6 +3,25 @@
 version = 4
 
 [[package]]
+name = "ProxyRight"
+version = "0.1.0"
+dependencies = [
+ "base64",
+ "chrono",
+ "governor",
+ "http 0.2.12",
+ "hyper 0.14.32",
+ "mime_guess",
+ "mockito",
+ "nonzero_ext",
+ "reqwest",
+ "serde",
+ "tempfile",
+ "tokio",
+ "toml",
+]
+
+[[package]]
 name = "addr2line"
 version = "0.24.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -191,25 +210,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
-]
-
-[[package]]
-name = "echoserver"
-version = "0.1.0"
-dependencies = [
- "base64",
- "chrono",
- "governor",
- "http 0.2.12",
- "hyper 0.14.32",
- "mime_guess",
- "mockito",
- "nonzero_ext",
- "reqwest",
- "serde",
- "tempfile",
- "tokio",
- "toml",
 ]
 
 [[package]]

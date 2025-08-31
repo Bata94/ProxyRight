@@ -33,7 +33,7 @@
     };
 
     packages."x86_64-linux".default = naerskLib.buildPackage {
-      pname = "echoserver";
+      pname = "ProxyRight";
       src = ./.;
       buildInputs = [pkgs.openssl];
       nativeBuildInputs = [pkgs.pkg-config];

@@ -4,7 +4,7 @@
   pkg-config,
 }:
 rustPlatform.buildRustPackage {
-  name = "echoserver";
+  name = "ProxyRight";
   src = ./.;
   buildInputs = [openssl];
   nativeBuildInputs = [pkg-config];

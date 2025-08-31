@@ -1,4 +1,4 @@
-use echoserver::config::{Config, Route, HealthStatus};
+use ProxyRight::config::{Config, Route, HealthStatus};
 use std::sync::Arc;
 use std::sync::atomic::AtomicUsize;
 use tokio::sync::Mutex;
@@ -23,7 +23,7 @@ async fn test_health_check_healthy() {
     let route = config.routes[0].clone();
     let client = reqwest::Client::new();
 
-    echoserver::health::check_health(&client, route.clone(), 0).await;
+    ProxyRight::health::check_health(&client, route.clone(), 0).await;
 
     let route_lock = route.lock().await;
     assert_eq!(route_lock.statuses[0], HealthStatus::Unhealthy); // Expect unhealthy as no server is running
@@ -49,7 +49,7 @@ async fn test_health_check_unhealthy() {
     let route = config.routes[0].clone();
     let client = reqwest::Client::new();
 
-    echoserver::health::check_health(&client, route.clone(), 0).await;
+    ProxyRight::health::check_health(&client, route.clone(), 0).await;
 
     let route_lock = route.lock().await;
     assert_eq!(route_lock.statuses[0], HealthStatus::Unhealthy); // Expect unhealthy as no server is running
