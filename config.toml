@@ -1,0 +1,22 @@
+health_check_interval = 5
+
+[[routes]]
+host = "google.localhost"
+backends = ["http://www.google.com"]
+
+[[routes]]
+host = "mrg.localhost"
+backends = ["http://localhost:5500"]
+
+# Default route for unmatched requests
+[default_route]
+backend = "http://att.com" # Placeholder for a default backend
+
+# Static file serving
+[[static_files]]
+path = "/static/"
+root = "./static_content" # Placeholder for the directory where static files are served from
+host = "static.localhost" # New: Optional host for static files
+
+# Middlewares
+middlewares = ["logging"] # Example: Enable the logging middleware
